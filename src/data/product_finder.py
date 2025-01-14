@@ -20,7 +20,7 @@ class ProductFinder:
         return self.__format_response(product)
         
     def __find_in_cache(self, product_name: str) -> tuple:
-        product_infos = self.__redis_repo.get(product_name)
+        product_infos = self.__redis_repo.get_key(product_name)
         if product_infos:
             product_infos_list = product_infos.split(",")
             return (0,product_name, product_infos_list[0], product_infos_list[1])

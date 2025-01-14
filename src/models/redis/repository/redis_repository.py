@@ -2,6 +2,8 @@ from redis import Redis
 from .interfaces.redis_repository import RedisRepositoryInterface
 class RedisRepository(RedisRepositoryInterface):
     def __init__(self, redis_conn: Redis) -> None:
+        if redis_conn is None:
+            raise ValueError("Redis connection cannot be None")
         self.__redis_conn = redis_conn
         
     def insert(self, key: str, value: str) -> None:
@@ -22,9 +24,8 @@ class RedisRepository(RedisRepositoryInterface):
             return value.decode('utf-8')
         return None
 
-    def insert_ex(self,key:str,field:str, value:any, ex:int) -> None:
-        self.__redis_conn.hset(key, field, value)
-        self.__redis_conn.expire(key, ex)
+    def insert_ex(self, key: str, value: any, ex: int) -> None:
+        self.__redis_conn.set(key, value, ex=ex)
         
     def insert_hash_ex(self, key:str, field:str, value:any, ex:int) -> None:
         self.__redis_conn.hset(key, field, value)
